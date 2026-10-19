@@ -89,4 +89,37 @@ print(f">> patched {count} version-print sites (DumpVersion/DumpFullVersion)")
 PYEOF
 fi
 
+# --- 7. vendor: set MOZ_APP_VENDOR at its only accepted origin ---------------
+# configure refuses MOZ_APP_VENDOR from mozconfig / env; browser/moz.configure
+# implies the default ("Mozilla"), so override it there.
+BROWSER_CONF="$SRC/browser/moz.configure"
+if grep -qF 'DUSKFOX: vendor' "$BROWSER_CONF"; then
+  echo ">> vendor imply patch already applied"
+else
+  python3 - "$BROWSER_CONF" <<'PYEOF'
+import sys
+
+path = sys.argv[1]
+with open(path) as f:
+    src = f.read()
+
+old = 'imply_option("MOZ_APP_VENDOR", "Mozilla")'
+new = (
+    '# DUSKFOX: vendor is only settable via imply (mozconfig/env origins are\n'
+    '# rejected by configure), so override the default here.\n'
+    'imply_option("MOZ_APP_VENDOR", "Duskfox")'
+)
+
+count = src.count(old)
+if count != 1:
+    sys.exit(
+        "unexpected browser/moz.configure layout: "
+        f"found {count} vendor implies, expected 1"
+    )
+with open(path, "w") as f:
+    f.write(src.replace(old, new))
+print(">> patched MOZ_APP_VENDOR imply -> Duskfox")
+PYEOF
+fi
+
 echo ">> DONE."
