@@ -77,3 +77,15 @@
     filter: none !important;
   }
 }
+
+/* --- Block 3: start page — drop the wordmark text ------------------------
+   about:newtab / about:home ship the branded text as
+   <div class="wordmark"></div> next to the logo. Hide just that; the logo
+   stays. Delete this block to bring the word back. */
+@-moz-document url("about:newtab"),
+               url("about:home"),
+               url("about:welcome") {
+  .wordmark {
+    display: none !important;
+  }
+}
