@@ -78,13 +78,14 @@
   }
 }
 
-/* --- Block 3: start page — drop the wordmark text ------------------------
-   about:newtab / about:home ship the branded text as
-   <div class="wordmark"></div> next to the logo. Hide just that; the logo
-   stays. Delete this block to bring the word back. */
+/* --- Block 3: start pages — drop the wordmark text ------------------------
+   Covers the new tab/home React app (.logo-and-wordmark .wordmark), the
+   private browsing start page (static <div class="wordmark">), and welcome.
+   Hides only the wordmark text; the logo stays. Delete block to restore. */
 @-moz-document url("about:newtab"),
                url("about:home"),
-               url("about:welcome") {
+               url("about:welcome"),
+               url("about:privatebrowsing") {
   .wordmark {
     display: none !important;
   }
