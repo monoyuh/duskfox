@@ -139,6 +139,7 @@ pref("browser.xul.error_pages.expert_bad_cert", true);
 pref("browser.tabs.unloadOnLowMemory", true);
 pref("browser.sessionstore.max_tabs_undo", 10);
 pref("browser.sessionstore.max_windows_undo", 2);
+pref("browser.sessionstore.restore_on_demand", true);   // restore tabs lazily -> faster startup
 
 // ============================================================================
 //  BLOAT :: telemetry / reporting / studies  (all off)
@@ -224,12 +225,15 @@ pref("network.connectivity-service.enabled", false);
 pref("geo.enabled", false);
 pref("beacon.enabled", false);
 pref("browser.aboutConfig.showWarning", false);
+pref("extensions.getAddons.showPane", false);          // no Add-ons Discover pane
+pref("extensions.getAddons.cache.enabled", false);     // no addon metadata fetches
 
 // ============================================================================
-//  UI :: NATIVE VERTICAL TABS  (no extension)
+//  UI :: TABS  (horizontal top strip; native vertical rail still available
+//  by flipping sidebar.verticalTabs in about:config -> Customize)
 // ============================================================================
 pref("sidebar.revamp", true);
-pref("sidebar.verticalTabs", true);
+pref("sidebar.verticalTabs", false);
 
 // ============================================================================
 //  STARTUP :: blank + instant

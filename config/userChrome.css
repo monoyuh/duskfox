@@ -115,15 +115,95 @@ toolbarseparator {
 /* --- Hidden clutter (delete a line to bring it back) --- */
 #home-button,                    /* menu / Alt+Home still work */
 #downloads-button,               /* Ctrl+J; tell me if popups look odd */
-#unified-extensions-button,      /* zero extensions installed */
+#unified-extensions-button,      /* PreMid still runs; button hides with area */
+#unified-extensions-area,        /* holds PreMid's button — say the word to keep */
 #bookmarks-button,
 #library-button,
 #save-to-pocket-button,
 #FirefoxScreenshotsButton,
 #translate-button,
 #translations-button,
-#nav-bar-overflow-button {       /* only appears if you drag things in */
+#nav-bar-overflow-button,        /* only appears if you drag things in */
+#sidebar-button,                 /* side view; hamburger menu still opens it */
+#firefox-view-button,
+#alltabs-button,                 /* list-all-tabs chevron */
+#tabs-newtab-button {            /* Ctrl+T / middle-click still work */
   display: none !important;
+}
+
+/* ---------------------------------------------------------------------------
+ * 2b. Compact top chrome — squeeze the strip + nav bar to the bone.
+ *     Was 37px strip + 36px nav (73px total); targeting ~52px.
+ *     If anything clips, raise the px values below (they're plain numbers).
+ * ------------------------------------------------------------------------ */
+:root {
+  --tab-min-height: 22px !important;
+  --tab-block-margin: 1px !important;
+  --tabstrip-min-height: 24px !important;
+  --urlbar-min-height: 20px !important;
+  --urlbar-container-padding: 1px !important;
+  --toolbarbutton-inner-padding: 3px !important;
+  --toolbarbutton-outer-padding: 1px !important;
+}
+
+#TabsToolbar {
+  min-height: 0 !important;
+  padding-block: 0 !important;
+  margin-block: 0 !important;
+}
+
+#tabbrowser-tabs {
+  min-height: 0 !important;
+  padding-block: 0 !important;
+}
+
+.tabbrowser-tab {
+  min-height: 22px !important;
+  padding-block: 1px !important;
+}
+
+#nav-bar {
+  min-height: 0 !important;
+  padding-block: 2px !important;
+}
+
+#urlbar-container {
+  min-height: 0 !important;
+  padding-block: 0 !important;
+  /* JS sets --urlbar-container-height: 26px inline; pin the box anyway.
+   * Nav buttons just stretch to this, so they follow automatically. */
+  height: 22px !important;
+}
+
+#urlbar {
+  min-height: 20px !important;
+}
+
+/* tabs.css:763 pins .tab-label-container to height:2.7em (~36px) — that was
+ * the strip's real floor (a hard height, so min-height overrides were
+ * ignored). Undo it; single-line labels shrink to ~15px. */
+.tab-label-container {
+  height: auto !important;
+}
+
+/* urlbar: 26px -> 22px box (icons are 16px, still fits) */
+#urlbar {
+  height: 22px !important;
+}
+
+/* nav toolbar buttons (back/fwd/menu) compute an intrinsic 26px height;
+ * pin them to match the slim urlbar so the whole nav row collapses. */
+#nav-bar .toolbarbutton-1 {
+  height: 22px !important;
+  min-height: 0 !important;
+}
+
+#urlbar-input-container {
+  padding-block: 0 !important;
+}
+
+toolbarbutton.toolbarbutton-1 {
+  padding-block: 2px !important;
 }
 
 /* Everything inside the urlbar right side: reader, star, zoom, shield, ... */
