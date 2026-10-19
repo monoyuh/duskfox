@@ -1,0 +1,27 @@
+# --- local build / packaging output ---
+pkg/
+duskfox/
+*.tar.gz
+*.tar.xz
+
+# --- logs / pids ---
+*.log
+*.pid
+tarout.txt
+
+# --- test scratch (profiles copied from the live one - never publish) ---
+gtest*/
+profcopy/
+sshot-test/
+dbcopy/
+site/
+gu
+tv/
+
+# --- local reference material (third-party pref dumps) ---
+ref/
+
+# --- patch backups / editor noise ---
+*.orig
+*.rej
+.DS_Store

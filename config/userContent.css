@@ -1,0 +1,79 @@
+/* ==========================================================================
+   Duskfox  —  dark mode for Google (the only site that needs help)
+   --------------------------------------------------------------------------
+   Install:   <profile>/chrome/userContent.css
+   Enable:    toolkit.legacyUserProfileCustomizations.stylesheets = true
+              (verified in Firefox 140 source: that pref gates BOTH
+               userChrome.css and userContent.css)
+
+   MEASURED on this machine, with this profile's own cookies, by screenshotting
+   each surface headless and reading the pixels (empty stylesheet = "native"):
+
+     surface              native avg brightness   native dominant colour
+     -----------------------------------------------------------------
+     google.com/search          147              (34,36,42)  <- ALREADY DARK
+     google.ee/search           253              (255,255,255)  <- white
+     consent.google.com         254              (255,255,255)  <- white
+
+   content-override 0 / 1 / removed all give the same result (verified the
+   pref was really applied each time) -> Google does NOT follow
+   prefers-color-scheme here. So there is no pref that fixes this.
+
+   Two facts drive this stylesheet:
+
+   1. google.com is ALREADY dark for you. Inverting it flipped it light:
+      avg went 147 (native) -> 173 (with the old invert rule). That inversion
+      WAS your flashbang. So .com gets the "leave it alone" block, which is
+      declared LAST so its `filter: none` wins.
+
+   2. Firefox does NOT apply a filter on <html> to the canvas background
+      (measured: a green html background stayed green while everything on top
+      inverted). That is why white Google pages kept glaring through: their
+      root background is never inverted. So we paint the canvas dark ourselves
+      with an !important background, which does win (Google's own root
+      background is an author rule and loses to user !important).
+
+   elva.ope.ee rule: removed at your request.
+   ========================================================================== */
+
+/* --- Block 1: every Google host ------------------------------------------
+   Paint the canvas dark (the part a filter can never reach), and invert the
+   content for hosts served white. hue-rotate(180deg) puts Google's blues back
+   to blue after inverting, and media is un-inverted so the logo, favicons and
+   result thumbnails keep their real colours. */
+@-moz-document url-prefix("https://www.google."),
+               url-prefix("https://google."),
+               url-prefix("http://www.google."),
+               url-prefix("http://google."),
+               url-prefix("https://encrypted.google."),
+               url-prefix("https://consent.google.") {
+
+  html {
+    background-color: #17181c !important;
+    filter: invert(1) hue-rotate(180deg) !important;
+  }
+
+  img, picture, video, audio, canvas, svg, iframe, embed, object,
+  [style*="background-image"] {
+    filter: invert(1) hue-rotate(180deg) !important;
+  }
+}
+
+/* --- Block 2: google.com only — undo the inversion -----------------------
+   Declared after block 1 with the same !important, so it wins on .com and
+   does nothing anywhere else (google.ee / consent / co.uk never match these
+   prefixes). .com is dark natively; all it needs is the canvas guarantee. */
+@-moz-document url-prefix("https://www.google.com/"),
+               url-prefix("https://google.com/"),
+               url-prefix("http://www.google.com/"),
+               url-prefix("http://google.com/") {
+  /* deliberately path-terminated ("...google.com/") and deliberately NOT
+     consent.google.com: the consent wall is measured white, so it must stay
+     in block 1 and keep its inversion. */
+
+  html,
+  img, picture, video, audio, canvas, svg, iframe, embed, object,
+  [style*="background-image"] {
+    filter: none !important;
+  }
+}

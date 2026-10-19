@@ -1,0 +1,52 @@
+===============================
+ Duskfox 140.17.0esr  (test build)
+===============================
+
+A personal, speed-tuned Firefox fork. This is a throwaway test build for a
+friend to kick the tires -- it is NOT an official release and gets no updates.
+
+HOW TO RUN
+----------
+    tar xf duskfox-140.17-linux-x86_64.tar.gz
+    cd duskfox
+    ./duskfox
+
+That's it. First start creates a fresh profile in ~/.mozilla/duskfox/
+(it will NOT touch your existing Firefox/LibreWolf profile). To wipe it and
+start over:  rm -rf ~/.mozilla/duskfox
+
+REQUIREMENTS (please read -- it's a locally compiled build)
+-----------------------------------------------------------
+  * Linux, x86_64 only. (No Windows/macOS build exists.)
+  * glibc 2.38 or newer  ->  Ubuntu 24.04+, Fedora 39+, Debian 13, Arch,
+    openSUSE Tumbleweed, Void.  Ubuntu 22.04 / Debian 12 are TOO OLD and the
+    binary will refuse to start ("GLIBC_2.38 not found").
+  * CPU: Intel Haswell (2013) or newer / AMD Zen or newer. This was compiled
+    with -march=haswell, so on older CPUs (Sandy/Ivy Bridge, AMD FX/Phenom)
+    it crashes instantly with "Illegal instruction".
+  * GTK3 + the usual desktop libs.
+
+  Check yours:   ldd --version | head -1     (want 2.38+)
+
+If it won't launch, this shows what's missing:
+    ldd ./duskfox | grep 'not found'
+
+WHAT'S MODIFIED vs STOCK FIREFOX
+--------------------------------
+  * Compiled -O3, ThinLTO, PGO off, jemalloc on, lld linker -> just fast.
+  * Vertical tabs ON natively (no extension).
+  * Debloated defaults: no telemetry, no safe-browsing phone-home, no
+    sponsored tiles, no Pocket, no studies, no crash reporter nag.
+  * Video: WebM/VP9 and AV1 are DISABLED on purpose, so YouTube serves
+    H.264 (avc1), which older AMD GPUs (Polaris/RX 470/480) can hardware
+    decode for free. Side effect: VP9/WebM <video> on random sites may not
+    play, and some YouTube streams may cap at a lower resolution.
+  * No adblocker, by choice.
+
+KNOWN ROUGH EDGES (it's a test build)
+-------------------------------------
+  * GPU compositing may fall back to software on some setups (we're still
+    poking at that). Pages are still snappy; video is what suffers.
+  * Icon is a placeholder globe.
+
+QUESTIONS / BUGS: tell the person who gave you this file.
