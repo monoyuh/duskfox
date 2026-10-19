@@ -1,0 +1,354 @@
+/* ===========================================================================
+ * Duskfox userChrome.css — v1 "Helium-clean" (dark dusk)
+ *
+ * Geometry after Helium: one compact toolbar row, pill omnibox that stretches
+ * edge to edge, flat icon-only buttons, extra chrome hidden, slim vertical
+ * tab rail. Palette is Duskfox dark: near-black chrome, violet-blue accent.
+ *
+ * Install: copy into <profile>/chrome/userChrome.css
+ * Requires pref: toolkit.legacyUserProfileCustomizations.stylesheets = true
+ * Apply: restart Duskfox (no rebuild needed).
+ *
+ * To bring hidden items back, delete/comment the line in section 2.
+ * =========================================================================== */
+
+/* ---------------------------------------------------------------------------
+ * 1. Palette + Firefox theme variable overrides
+ * ------------------------------------------------------------------------ */
+:root {
+  /* --- Duskfox palette --- */
+  --df-bg: #17181d;            /* chrome background */
+  --df-raised: #1d1f26;        /* sidebar, panels, open omnibox */
+  --df-field: #24262e;         /* omnibox at rest */
+  --df-field-focus: #2b2e38;   /* omnibox focused */
+  --df-fg: #e6e7ec;
+  --df-fg-dim: #9b9daa;
+  --df-accent: #6d5fe8;        /* dusk violet-blue (Helium's blue, shifted) */
+  --df-line: #2b2d36;
+  --df-hover: rgba(255, 255, 255, 0.06);
+
+  /* --- Force dark chrome regardless of active theme --- */
+  --toolbox-bgcolor: var(--df-bg) !important;
+  --toolbar-bgcolor: var(--df-bg) !important;
+  --toolbar-color: var(--df-fg) !important;
+  --toolbar-field-background-color: var(--df-field) !important;
+  --toolbar-field-color: var(--df-fg) !important;
+  --toolbar-field-border-color: transparent !important;
+  --toolbar-field-focus-background-color: var(--df-field-focus) !important;
+  --toolbar-field-focus-color: var(--df-fg) !important;
+  --toolbar-field-separator-color: var(--df-line) !important;
+  --lwt-accent-color: var(--df-bg) !important;
+  --lwt-text-color: var(--df-fg) !important;
+  --lwt-secondary-text-color: var(--df-fg-dim) !important;
+  --lwt-contrast-fg: var(--df-fg) !important;
+
+  /* --- Panels / app menu --- */
+  --arrowpanel-background: var(--df-raised) !important;
+  --arrowpanel-color: var(--df-fg) !important;
+  --arrowpanel-border-color: var(--df-line) !important;
+  --panel-background: var(--df-raised) !important;
+  --panel-color: var(--df-fg) !important;
+  --panel-border-color: var(--df-line) !important;
+  --panel-header-color: var(--df-fg-dim) !important;
+
+  /* --- Native-ish menus (context menus, menubar popups) --- */
+  --menu-background: var(--df-raised) !important;
+  --menu-color: var(--df-fg) !important;
+  --menu-border-color: var(--df-line) !important;
+  --menuitem-hover-background: var(--df-accent) !important;
+  --menuitem-hover-color: #ffffff !important;
+  --menuitem-selected-background: var(--df-accent) !important;
+  --menuitem-selected-color: #ffffff !important;
+
+  /* --- Tabs --- */
+  --tab-border-radius: 8px !important;
+  --tab-bgcolor: transparent !important;
+  --tab-selected-bgcolor: var(--df-accent) !important;
+  --tab-selected-text-color: #ffffff !important;
+  --tab-hover-bgcolor: var(--df-hover) !important;
+  --tab-text-color: var(--df-fg) !important;
+}
+
+/* ---------------------------------------------------------------------------
+ * 2. Toolbar: flat surfaces, minimal buttons, hidden clutter
+ * ------------------------------------------------------------------------ */
+#navigator-toolbox {
+  background: var(--df-bg) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+#nav-bar {
+  background: var(--df-bg) !important;
+  border-bottom: 1px solid var(--df-line) !important;
+  box-shadow: none !important;
+}
+
+/* All toolbar buttons: flat, rounded hover pill */
+toolbarbutton.toolbarbutton-1 {
+  appearance: none !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+}
+toolbarbutton.toolbarbutton-1:hover,
+toolbarbutton.toolbarbutton-1:active,
+toolbarbutton.toolbarbutton-1[open] {
+  background-color: var(--df-hover) !important;
+}
+toolbarbutton.toolbarbutton-1 > .toolbarbutton-icon {
+  appearance: none !important;
+  filter: none !important;
+}
+
+/* Slim separators between buttons */
+toolbarseparator {
+  appearance: none !important;
+  background-color: var(--df-line) !important;
+  border: none !important;
+  min-width: 1px !important;
+  width: 1px !important;
+  margin-inline: 5px !important;
+}
+
+/* --- Hidden clutter (delete a line to bring it back) --- */
+#home-button,                    /* menu / Alt+Home still work */
+#downloads-button,               /* Ctrl+J; tell me if popups look odd */
+#unified-extensions-button,      /* zero extensions installed */
+#bookmarks-button,
+#library-button,
+#save-to-pocket-button,
+#FirefoxScreenshotsButton,
+#translate-button,
+#translations-button,
+#nav-bar-overflow-button {       /* only appears if you drag things in */
+  display: none !important;
+}
+
+/* Everything inside the urlbar right side: reader, star, zoom, shield, ... */
+#page-action-buttons,
+#tracking-protection-icon-container,
+#urlbar-zoom-button,
+#reader-mode-button,
+#userContext-container {
+  display: none !important;
+}
+
+/* Hover-link preview bottom-left. Comment out to get it back. */
+#statuspanel {
+  display: none !important;
+}
+
+/* ---------------------------------------------------------------------------
+ * 3. Omnibox: full-width pill, dark results dropdown
+ * ------------------------------------------------------------------------ */
+#urlbar-container {
+  flex: 1 1 auto !important;
+  min-width: 60px !important;
+  max-width: none !important;
+}
+
+#urlbar {
+  max-width: none !important;
+  width: 100% !important;
+}
+
+#urlbar-background {
+  background: var(--df-field) !important;
+  border: 1px solid transparent !important;
+  border-radius: 999px !important;
+  box-shadow: none !important;
+}
+
+#urlbar[focused] #urlbar-background,
+#urlbar:focus-within #urlbar-background {
+  background: var(--df-field-focus) !important;
+  border-color: color-mix(in srgb, var(--df-accent) 45%, transparent) !important;
+}
+
+/* Open = results card */
+#urlbar[open] #urlbar-background {
+  background: var(--df-raised) !important;
+  border-color: var(--df-line) !important;
+  border-radius: 14px !important;
+}
+
+.urlbarView {
+  background: transparent !important;
+}
+.urlbarView-row {
+  color: var(--df-fg) !important;
+  border-radius: 8px !important;
+}
+.urlbarView-row[selected],
+.urlbarView-row[selected]:hover {
+  background: var(--df-accent) !important;
+  color: #ffffff !important;
+}
+.urlbarView-row:hover:not([selected]) {
+  background: var(--df-hover) !important;
+}
+.urlbarView-title,
+.urlbarView-url {
+  color: inherit !important;
+}
+.urlbarView-tag,
+.urlbarView-action,
+.urlbarView-key {
+  color: var(--df-fg-dim) !important;
+}
+.urlbarView-row-separator {
+  background-color: transparent !important;
+  border-color: transparent !important;
+}
+#urlbar-separator {
+  display: none !important;
+}
+
+/* ---------------------------------------------------------------------------
+ * 4. Vertical tabs rail
+ * ------------------------------------------------------------------------ */
+#sidebar-main {
+  background: var(--df-raised) !important;
+}
+*|sidebar-main {
+  background: var(--df-raised) !important;
+}
+
+/* The slotted toolbar area holding #tabbrowser-tabs */
+#vertical-tabs {
+  background: transparent !important;
+  padding: 6px !important;
+}
+
+#tabbrowser-tabs {
+  --tab-border-radius: 8px !important;
+  --tab-selected-bgcolor: var(--df-accent) !important;
+  --tab-selected-text-color: #ffffff !important;
+  --tab-bgcolor: transparent !important;
+}
+#tabbrowser-tabs[orient="vertical"] {
+  --tab-selected-bgcolor: var(--df-accent) !important;
+}
+
+.tabbrowser-tab .tab-label {
+  color: var(--df-fg) !important;
+}
+.tabbrowser-tab[selected] .tab-label,
+.tabbrowser-tab[visuallyselected] .tab-label {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+.tabbrowser-tab:not([selected]):hover .tab-background {
+  background-color: var(--df-hover) !important;
+}
+.tabbrowser-tab[selected] .tab-background,
+.tabbrowser-tab[visuallyselected] .tab-background {
+  background-color: var(--df-accent) !important;
+}
+
+#tabbrowser-tabs[orient="vertical"] {
+  scrollbar-color: var(--df-line) transparent !important;
+}
+
+/* New-tab button in the rail (and top strip, if ever shown) */
+#vertical-tabs-newtab-button,
+#tabs-newtab-button {
+  appearance: none !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 8px !important;
+}
+#vertical-tabs-newtab-button:hover,
+#tabs-newtab-button:hover {
+  background: var(--df-hover) !important;
+}
+
+/* Splitters: hairline, same tone */
+#sidebar-launcher-splitter,
+#sidebar-splitter {
+  background: var(--df-line) !important;
+}
+
+/* ---------------------------------------------------------------------------
+ * 5. Sidebar panel (history / bookmarks side view)
+ * ------------------------------------------------------------------------ */
+#sidebar-box {
+  background: var(--df-raised) !important;
+  border: none !important;
+}
+#sidebar-header {
+  background: var(--df-raised) !important;
+  color: var(--df-fg) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+#sidebar-title,
+#sidebar-icon {
+  color: var(--df-fg) !important;
+}
+#sidebar-switcher-target,
+#sidebar-close {
+  appearance: none !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 8px !important;
+}
+#sidebar-switcher-target:hover,
+#sidebar-close:hover {
+  background: var(--df-hover) !important;
+}
+#sidebar {
+  background: var(--df-raised) !important;
+}
+
+/* ---------------------------------------------------------------------------
+ * 6. Panels, app menu, context menus
+ * ------------------------------------------------------------------------ */
+panel {
+  --panel-background: var(--df-raised) !important;
+  --panel-color: var(--df-fg) !important;
+  --panel-border-color: var(--df-line) !important;
+}
+.panel-arrowcontent {
+  background: var(--df-raised) !important;
+  color: var(--df-fg) !important;
+  border: 1px solid var(--df-line) !important;
+  border-radius: 14px !important;
+}
+
+.subviewbutton {
+  color: var(--df-fg) !important;
+  background: transparent !important;
+  border-radius: 8px !important;
+}
+.subviewbutton:hover {
+  background: var(--df-hover) !important;
+}
+.panel-header,
+.panel-header h1 {
+  color: var(--df-fg-dim) !important;
+}
+
+/* Context menus and menubar popups */
+menupopup {
+  background: var(--df-raised) !important;
+  color: var(--df-fg) !important;
+  border: 1px solid var(--df-line) !important;
+  border-radius: 12px !important;
+}
+menu,
+menuitem {
+  color: var(--df-fg) !important;
+}
+menuitem[_moz-menuactive="true"],
+menu[_moz-menuactive="true"],
+menu[open] {
+  background: var(--df-accent) !important;
+  color: #ffffff !important;
+}
+menuseparator {
+  background-color: var(--df-line) !important;
+  border-color: var(--df-line) !important;
+}

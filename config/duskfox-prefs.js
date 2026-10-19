@@ -246,3 +246,10 @@ pref("browser.startup.preXulSkeletonUI", false);
 pref("app.update.enabled", false);
 pref("app.update.auto", false);
 pref("app.update.background.scheduling.enabled", false);
+
+// ============================================================================
+//  DUSKFOX UI  (userChrome.css / userContent.css from config/ go in
+//  <profile>/chrome/; these prefs make fresh profiles ready for them)
+// ============================================================================
+pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);
+pref("browser.uidensity", 1);   // compact density, Helium-style tight chrome
