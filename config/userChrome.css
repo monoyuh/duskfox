@@ -1,8 +1,9 @@
 /* ===========================================================================
- * Duskfox userChrome.css — v2 "Helium-clean" (dark dusk)
+ * Duskfox userChrome.css — v1 "Helium-clean" (dark dusk)
  *
- * v2: +depth (layered contrast, gradients, shadows), smaller top chrome.
- * Measured targets: tab strip 37 -> ~29px, nav bar 36 -> ~28px (73 -> ~57).
+ * Geometry after Helium: one compact toolbar row, pill omnibox that stretches
+ * edge to edge, flat icon-only buttons, extra chrome hidden, slim vertical
+ * tab rail. Palette is Duskfox dark: near-black chrome, violet-blue accent.
  *
  * Install: copy into <profile>/chrome/userChrome.css
  * Requires pref: toolkit.legacyUserProfileCustomizations.stylesheets = true
@@ -15,18 +16,16 @@
  * 1. Palette + Firefox theme variable overrides
  * ------------------------------------------------------------------------ */
 :root {
-  /* --- Duskfox palette (deeper base, lifted surfaces = elevation) --- */
-  --df-bg: #131419;            /* chrome background */
-  --df-raised: #212430;        /* sidebar, panels, open omnibox */
-  --df-field: #262a35;         /* omnibox at rest */
-  --df-field-focus: #2d3140;   /* omnibox focused */
+  /* --- Duskfox palette --- */
+  --df-bg: #17181d;            /* chrome background */
+  --df-raised: #1d1f26;        /* sidebar, panels, open omnibox */
+  --df-field: #24262e;         /* omnibox at rest */
+  --df-field-focus: #2b2e38;   /* omnibox focused */
   --df-fg: #e6e7ec;
-  --df-fg-dim: #979aa7;
-  --df-accent: #6d5fe8;        /* dusk violet-blue */
-  --df-line: #343846;
-  --df-hover: rgba(255, 255, 255, 0.07);
-  --df-hi: rgba(255, 255, 255, 0.07);   /* top-edge highlight */
-  --df-shade: rgba(0, 0, 0, 0.45);
+  --df-fg-dim: #9b9daa;
+  --df-accent: #6d5fe8;        /* dusk violet-blue (Helium's blue, shifted) */
+  --df-line: #2b2d36;
+  --df-hover: rgba(255, 255, 255, 0.06);
 
   /* --- Force dark chrome regardless of active theme --- */
   --toolbox-bgcolor: var(--df-bg) !important;
@@ -52,7 +51,7 @@
   --panel-border-color: var(--df-line) !important;
   --panel-header-color: var(--df-fg-dim) !important;
 
-  /* --- Native-ish menus --- */
+  /* --- Native-ish menus (context menus, menubar popups) --- */
   --menu-background: var(--df-raised) !important;
   --menu-color: var(--df-fg) !important;
   --menu-border-color: var(--df-line) !important;
@@ -61,54 +60,31 @@
   --menuitem-selected-background: var(--df-accent) !important;
   --menuitem-selected-color: #ffffff !important;
 
-  /* --- Tabs (compact: strip 37 -> ~29px) --- */
+  /* --- Tabs --- */
   --tab-border-radius: 8px !important;
   --tab-bgcolor: transparent !important;
   --tab-selected-bgcolor: var(--df-accent) !important;
   --tab-selected-text-color: #ffffff !important;
   --tab-hover-bgcolor: var(--df-hover) !important;
   --tab-text-color: var(--df-fg) !important;
-  --tab-min-height: 24px !important;
-  --tab-block-margin: 2px !important;
-
-  /* --- URL bar (nav row 36 -> ~28px) --- */
-  --urlbar-min-height: max(24px, 1.4em) !important;
-  --urlbar-container-padding: 1px !important;
-
-  /* --- Button padding --- */
-  --toolbarbutton-inner-padding: 4px !important;
-  --toolbarbutton-outer-padding: 2px !important;
 }
 
 /* ---------------------------------------------------------------------------
- * 2. Toolbar: layered surfaces, flat buttons, hidden clutter
+ * 2. Toolbar: flat surfaces, minimal buttons, hidden clutter
  * ------------------------------------------------------------------------ */
-/* Top sheen over deep base = the chrome reads as a surface, not a void */
 #navigator-toolbox {
-  background:
-    linear-gradient(180deg, var(--df-hi), transparent 42%),
-    var(--df-bg) !important;
+  background: var(--df-bg) !important;
   border: none !important;
   box-shadow: none !important;
 }
 
-/* Tab strip sits above nav: hairline layer break (horizontal-tab mode) */
-#TabsToolbar {
-  background: transparent !important;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.32) !important;
-}
-
 #nav-bar {
   background: var(--df-bg) !important;
-  padding-block: 3px !important;
-  border-bottom: none !important;
-  /* dark hairline + drop shadow = content sits below a real edge */
-  box-shadow:
-    0 1px 0 rgba(0, 0, 0, 0.55),
-    0 3px 9px rgba(0, 0, 0, 0.35) !important;
+  border-bottom: 1px solid var(--df-line) !important;
+  box-shadow: none !important;
 }
 
-/* All toolbar buttons: flat, rounded, with hover lift */
+/* All toolbar buttons: flat, rounded hover pill */
 toolbarbutton.toolbarbutton-1 {
   appearance: none !important;
   background-color: transparent !important;
@@ -120,9 +96,6 @@ toolbarbutton.toolbarbutton-1:hover,
 toolbarbutton.toolbarbutton-1:active,
 toolbarbutton.toolbarbutton-1[open] {
   background-color: var(--df-hover) !important;
-  box-shadow:
-    inset 0 1px 0 var(--df-hi),
-    0 1px 2px rgba(0, 0, 0, 0.35) !important;
 }
 toolbarbutton.toolbarbutton-1 > .toolbarbutton-icon {
   appearance: none !important;
@@ -142,7 +115,7 @@ toolbarseparator {
 /* --- Hidden clutter (delete a line to bring it back) --- */
 #home-button,                    /* menu / Alt+Home still work */
 #downloads-button,               /* Ctrl+J; tell me if popups look odd */
-#unified-extensions-button,      /* PreMid still RUNS; its button hides here */
+#unified-extensions-button,      /* zero extensions installed */
 #bookmarks-button,
 #library-button,
 #save-to-pocket-button,
@@ -168,7 +141,7 @@ toolbarseparator {
 }
 
 /* ---------------------------------------------------------------------------
- * 3. Omnibox: full-width pill with lift, dark results card
+ * 3. Omnibox: full-width pill, dark results dropdown
  * ------------------------------------------------------------------------ */
 #urlbar-container {
   flex: 1 1 auto !important;
@@ -181,24 +154,17 @@ toolbarseparator {
   width: 100% !important;
 }
 
-/* Raised pill: top highlight, dark rim, drop shadow */
 #urlbar-background {
-  background: linear-gradient(180deg, #2a2e3b, var(--df-field)) !important;
-  border: 1px solid rgba(0, 0, 0, 0.55) !important;
+  background: var(--df-field) !important;
+  border: 1px solid transparent !important;
   border-radius: 999px !important;
-  box-shadow:
-    inset 0 1px 0 var(--df-hi),
-    0 1px 3px rgba(0, 0, 0, 0.4) !important;
+  box-shadow: none !important;
 }
 
 #urlbar[focused] #urlbar-background,
 #urlbar:focus-within #urlbar-background {
-  background: linear-gradient(180deg, #313647, var(--df-field-focus)) !important;
-  border-color: color-mix(in srgb, var(--df-accent) 55%, transparent) !important;
-  box-shadow:
-    inset 0 1px 0 var(--df-hi),
-    0 0 0 3px color-mix(in srgb, var(--df-accent) 26%, transparent),
-    0 2px 8px rgba(0, 0, 0, 0.45) !important;
+  background: var(--df-field-focus) !important;
+  border-color: color-mix(in srgb, var(--df-accent) 45%, transparent) !important;
 }
 
 /* Open = results card */
@@ -206,9 +172,6 @@ toolbarseparator {
   background: var(--df-raised) !important;
   border-color: var(--df-line) !important;
   border-radius: 14px !important;
-  box-shadow:
-    inset 0 1px 0 var(--df-hi),
-    0 12px 32px rgba(0, 0, 0, 0.55) !important;
 }
 
 .urlbarView {
@@ -220,9 +183,7 @@ toolbarseparator {
 }
 .urlbarView-row[selected],
 .urlbarView-row[selected]:hover {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(0, 0, 0, 0.12)),
-    var(--df-accent) !important;
+  background: var(--df-accent) !important;
   color: #ffffff !important;
 }
 .urlbarView-row:hover:not([selected]) {
@@ -246,15 +207,29 @@ toolbarseparator {
 }
 
 /* ---------------------------------------------------------------------------
- * 4. Tab strip (compact + depth on the selected pill)
+ * 4. Vertical tabs rail
  * ------------------------------------------------------------------------ */
+#sidebar-main {
+  background: var(--df-raised) !important;
+}
+*|sidebar-main {
+  background: var(--df-raised) !important;
+}
+
+/* The slotted toolbar area holding #tabbrowser-tabs */
+#vertical-tabs {
+  background: transparent !important;
+  padding: 6px !important;
+}
+
 #tabbrowser-tabs {
-  --tab-min-height: 24px !important;
-  --tab-block-margin: 2px !important;
   --tab-border-radius: 8px !important;
   --tab-selected-bgcolor: var(--df-accent) !important;
   --tab-selected-text-color: #ffffff !important;
   --tab-bgcolor: transparent !important;
+}
+#tabbrowser-tabs[orient="vertical"] {
+  --tab-selected-bgcolor: var(--df-accent) !important;
 }
 
 .tabbrowser-tab .tab-label {
@@ -268,23 +243,16 @@ toolbarseparator {
 .tabbrowser-tab:not([selected]):hover .tab-background {
   background-color: var(--df-hover) !important;
 }
-/* Selected = accent pill with its own light/shade + lift */
 .tabbrowser-tab[selected] .tab-background,
 .tabbrowser-tab[visuallyselected] .tab-background {
   background-color: var(--df-accent) !important;
-  background-image: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.15),
-    rgba(0, 0, 0, 0.14)
-  ) !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45) !important;
 }
 
 #tabbrowser-tabs[orient="vertical"] {
   scrollbar-color: var(--df-line) transparent !important;
 }
 
-/* New-tab button in the strip / rail */
+/* New-tab button in the rail (and top strip, if ever shown) */
 #vertical-tabs-newtab-button,
 #tabs-newtab-button {
   appearance: none !important;
@@ -297,27 +265,14 @@ toolbarseparator {
   background: var(--df-hover) !important;
 }
 
-/* ---------------------------------------------------------------------------
- * 5. Vertical tabs rail (when enabled) + splitters
- * ------------------------------------------------------------------------ */
-#sidebar-main {
-  background: var(--df-raised) !important;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3) !important;
-}
-*|sidebar-main {
-  background: var(--df-raised) !important;
-}
-#vertical-tabs {
-  background: transparent !important;
-  padding: 6px !important;
-}
+/* Splitters: hairline, same tone */
 #sidebar-launcher-splitter,
 #sidebar-splitter {
   background: var(--df-line) !important;
 }
 
 /* ---------------------------------------------------------------------------
- * 6. Sidebar panel (history / bookmarks side view)
+ * 5. Sidebar panel (history / bookmarks side view)
  * ------------------------------------------------------------------------ */
 #sidebar-box {
   background: var(--df-raised) !important;
@@ -326,9 +281,7 @@ toolbarseparator {
 #sidebar-header {
   background: var(--df-raised) !important;
   color: var(--df-fg) !important;
-  min-height: 28px !important;
   border: none !important;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.3) !important;
   box-shadow: none !important;
 }
 #sidebar-title,
@@ -351,7 +304,7 @@ toolbarseparator {
 }
 
 /* ---------------------------------------------------------------------------
- * 7. Panels, app menu, context menus — real elevation
+ * 6. Panels, app menu, context menus
  * ------------------------------------------------------------------------ */
 panel {
   --panel-background: var(--df-raised) !important;
@@ -362,11 +315,7 @@ panel {
   background: var(--df-raised) !important;
   color: var(--df-fg) !important;
   border: 1px solid var(--df-line) !important;
-  border-top-color: rgba(255, 255, 255, 0.08) !important;
   border-radius: 14px !important;
-  box-shadow:
-    inset 0 1px 0 var(--df-hi),
-    0 12px 32px rgba(0, 0, 0, 0.55) !important;
 }
 
 .subviewbutton {
@@ -376,7 +325,6 @@ panel {
 }
 .subviewbutton:hover {
   background: var(--df-hover) !important;
-  box-shadow: inset 0 1px 0 var(--df-hi) !important;
 }
 .panel-header,
 .panel-header h1 {
@@ -389,7 +337,6 @@ menupopup {
   color: var(--df-fg) !important;
   border: 1px solid var(--df-line) !important;
   border-radius: 12px !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
 }
 menu,
 menuitem {
@@ -398,9 +345,7 @@ menuitem {
 menuitem[_moz-menuactive="true"],
 menu[_moz-menuactive="true"],
 menu[open] {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(0, 0, 0, 0.1)),
-    var(--df-accent) !important;
+  background: var(--df-accent) !important;
   color: #ffffff !important;
 }
 menuseparator {
