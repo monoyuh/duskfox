@@ -257,3 +257,8 @@ pref("app.update.background.scheduling.enabled", false);
 // ============================================================================
 pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);
 pref("browser.uidensity", 1);   // compact density, Helium-style tight chrome
+
+// ============================================================================
+//  WEBHID :: allow web pages to access HID devices (control software)
+// ============================================================================
+pref("dom.webhid.enabled", true);
